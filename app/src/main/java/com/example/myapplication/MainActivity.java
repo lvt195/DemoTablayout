@@ -36,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
             tab.setText(category.getName());
         }).attach();
 
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {@Override
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 Category category = mainAdapter.getCategories().get(position);
@@ -44,13 +45,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     public void updateData(int categoryId) {
         Log.d("abc", "updateData: " + categoryId);
         List<Category> newCategories = Category.createCategory();
         mainAdapter.updateCategories(newCategories);
         for (int i = 0; i < newCategories.size(); i++) {
             if (newCategories.get(i).getId() == categoryId) {
-                viewPager.setCurrentItem(i);
+                int finalI = i;
+                viewPager.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewPager.setCurrentItem(finalI);
+                    }
+                });
                 break;
             }
         }
